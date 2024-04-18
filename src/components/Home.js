@@ -124,7 +124,7 @@ const Home = () => {
 
     var level = 0;
     return (
-        <div className="font-poppins h-screen overflow-hidden w-full">
+        <div className="font-poppins h-screen w-full">
             <div className="flex justify-center mt-28 ">
                 <div className="w-[780px] flex">
                     <div className="w-1/2">
