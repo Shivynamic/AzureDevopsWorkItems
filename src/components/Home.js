@@ -25,7 +25,7 @@ const Home = () => {
         setParentChildArray([]);
         var parents = []
         axios.post(`https://dev.azure.com/${org}/${prj}/_apis/wit/wiql?api-version=6`, {
-            "query": "SELECT [System.Id], [System.Title], [System.State], [System.AssignedTo] FROM WorkItemLinks WHERE ([System.Links.LinkType] = 'System.LinkTypes.Hierarchy-Forward' ) MODE (Recursive)"
+            "query": `SELECT [System.Id], [System.Title], [System.State], [System.AssignedTo] FROM WorkItemLinks WHERE ([Source].[System.TeamProject] = '${prj}' AND [System.Links.LinkType] = 'System.LinkTypes.Hierarchy-Forward' ) MODE (Recursive)`
         }, auth).then((response) => {
             var workItemRelations = response.data.workItemRelations;
             workItemRelations.forEach((item) => {
@@ -42,7 +42,7 @@ const Home = () => {
     const fecthParentChildRelationship = (parents) => {
         for (var i = 0; i < parents.length; i++) {
             axios.post(`https://dev.azure.com/${org}/${prj}/_apis/wit/wiql?api-version=6`, {
-                "query": `SELECT [System.Id], [System.Title], [System.State], [System.AssignedTo] FROM WorkItemLinks WHERE ([Source].[System.Id] = ${parents[i]} AND [System.Links.LinkType] = 'System.LinkTypes.Hierarchy-Forward' ) MODE (Recursive)`
+                "query": `SELECT [System.Id], [System.Title], [System.State], [System.AssignedTo] FROM WorkItemLinks WHERE ([Source].[System.TeamProject] = '${prj}' AND [Source].[System.Id] = ${parents[i]} AND [System.Links.LinkType] = 'System.LinkTypes.Hierarchy-Forward' ) MODE (Recursive)`
             }, auth).then((response) => {
                 formParentChildTree(response.data.workItemRelations);
             });
@@ -83,7 +83,7 @@ const Home = () => {
                 if (obj.id === sourceId) {
                     return obj.children.push(node);
                 } else {
-                    return appendNode(obj, node, sourceId);
+                    appendNode(obj, node, sourceId);
                 }
             };
         }
